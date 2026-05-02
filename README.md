@@ -25,4 +25,17 @@ Ensure you have `ffmpeg` installed on your system for audio processing.
 ```bash
 git clone [https://github.com/YourUsername/AI-Voice-Debate-Partner.git](https://github.com/YourUsername/AI-Voice-Debate-Partner.git)
 
+2. Backend Setup:
+
+Bash
+cd debate_backend
+pip install -r requirements.txt
+uvicorn app:app --reload
+3. Frontend Setup:
+
+Bash
+cd ai-debate-partner
+npm install
+npm run dev
+
 
