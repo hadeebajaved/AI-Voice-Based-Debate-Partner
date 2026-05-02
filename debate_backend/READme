@@ -1,0 +1,315 @@
+# Voice Debate AI Backend – Team Integration Guide
+
+This backend powers the hec gen ai hackathon Voice-Based Debate AI application.
+
+It handles:
+
+* Audio upload
+* Audio normalization
+* Speech-to-text using Whisper
+* AI debate response using Groq + Llama
+* Scoring + feedback generation
+* Text-to-speech response using ElevenLabs (with gTTS fallback if ElevenLabs fails)
+* FastAPI API endpoints for frontend integration
+
+# IMPORTANT: Read Before Editing Anything
+
+Do NOT randomly change code structure.
+
+This backend is already working and optimized.
+
+Changing:
+
+* prompt format
+* file paths
+* API response structure
+* audio format
+* environment variables
+
+without coordination can break the full system.
+
+Please read this file fully before touching code.
+
+# Project Structure
+
+backend/
+│
+├── app.py
+├── requirements.txt
+├── .env
+│
+├── input/
+│   └── uploaded + normalized audio files
+│
+├── output/
+│   └── generated AI voice response files
+│
+└── backup/
+    └── old safe backup files
+
+
+# Required Python Version
+
+Use:
+
+Python 3.11
+
+Do NOT use Python 3.12 or 3.13 for this project.
+
+Reason:
+Some audio dependencies break on 3.12 and 3.13.
+
+# Required Installation
+
+Run in terminal:
+
+```bash
+pip install -r requirements.txt
+```
+
+If issues happen:
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+# .env File Required
+
+Inside it:
+
+GROQ_API_KEY=your_groq_api_key_here
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+
+IMPORTANT:
+Never push real API keys to GitHub.
+
+Never delete `.env`.
+
+Never rename variables.
+
+# Run Backend
+
+Start server using:
+
+```bash
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+.\venv\Scripts\Activate.ps1
+uvicorn app:app --reload
+```
+
+# Swagger UI:
+
+It is used to test fastAPI
+
+http://127.0.0.1:8000/docs
+
+
+# Final Backend Response Format
+
+Frontend must use EXACTLY this JSON structure:
+
+```json
+{
+  "request_id": "",
+  "status": "success",
+  "transcript": "",
+  "reply_text": "",
+  "clarity": 0,
+  "logic": 0,
+  "evidence": 0,
+  "persuasiveness": 0,
+  "rebuttal_strength": 0,
+  "score": 0,
+  "feedback": "",
+  "processing_time_seconds": 0,
+  "response_audio_file": ""
+}
+```
+
+Do NOT rename fields.
+
+Do NOT remove fields.
+
+Do NOT change data types.
+
+Parser + frontend depend on this exact structure.
+
+# Prompt Format (CRITICAL)
+
+AI output MUST remain in this exact format:
+
+Argument:
+Clarity:
+Logic:
+Evidence:
+Persuasiveness:
+Rebuttal Strength:
+Score:
+Feedback:
+
+If prompt structure changes:
+
+```python
+parse_gemini_output()
+```
+
+will break.
+
+This is critical.
+
+Do NOT change prompt labels.
+
+# Audio Requirements (CRITICAL)
+
+Frontend / Audio teammate must send:
+
+.wav
+mono channel
+16kHz sample rate
+
+Reason:
+This keeps processing fast (~5.9s).
+
+If random formats are sent:
+
+* speed drops
+* conversion slows
+* failures increase
+
+Avoid mp3/webm unless necessary.
+
+# Current Performance
+
+Average processing speed:
+
+~5.9 seconds
+
+Pipeline includes:
+
+* transcription
+* AI rebuttal
+* scoring
+* feedback
+* TTS generation
+
+This is optimized for hackathon demo.
+
+# Fallback Safety
+
+If:
+
+* Groq fails
+* ElevenLabs fails
+* API temporary issue happens
+
+System still falls back safely.
+
+This is intentional.
+
+Do NOT remove fallback logic.
+
+Live demos must never fully fail.
+
+# Safe Editing Rules
+
+Before changing code:
+
+## Always:
+
+* make backup first
+* test locally first
+* tell team before major changes
+
+## Never:
+
+* replace full app.py blindly
+* change API format without notice
+* rename folders randomly
+* hardcode API keys
+* delete fallback logic
+* change prompt labels casually
+
+# Teammate Responsibilities
+
+## Frontend
+
+Uses:
+
+* transcript
+* reply_text
+* score breakdown
+* feedback
+* response audio playback
+* response time display
+
+Recommended UI:
+
+* mic button
+* debate chat view
+* score progress bars
+* live scoreboard
+
+## AI Logic
+
+Responsible for:
+
+* better prompts
+* debate quality
+* score realism
+* stronger rebuttals
+
+Must preserve parser format.
+
+## Audio Processing
+
+Responsible for:
+
+* microphone quality
+* correct file format
+* noise reduction
+* sending WAV properly
+
+## Voice Output
+
+Responsible for:
+
+* ElevenLabs quality
+* voice consistency
+* fallback testing
+
+# Emergency Backup Rule
+
+Before hackathon final demo:
+
+Create:
+
+backup/app_final_working_backup.py
+
+Never demo without backup.
+
+Never trust live APIs without fallback.
+
+# Final Goal
+
+This is not just a chatbot.
+
+This is a:
+
+Real-time Voice Debate Judge + Opponent AI
+
+Focus on:
+
+* fast response
+* strong debate quality
+* smooth demo experience
+
+That wins hackathons.
+
+# Owner Notes
+
+Backend is currently stable and demo-ready.
+
+Please protect stability over unnecessary upgrades.
+
+Working code > risky improvements before judging.
