@@ -27,11 +27,6 @@ MAX_CHUNK_MS = 25_000
 # LOAD ENV VARIABLES
 # =========================
 
-l# =========================
-# LOAD ENV VARIABLES
-# =========================
-
-
 
 # Streamlit secrets se key uthaye ga, agar wahan na mili to environment se
 GROQ_API_KEY = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
