@@ -16,8 +16,8 @@ import shutil
 import uuid
 import os
 import re
+import streamlit as st
 
-# ── Member 3 config ──
 SAMPLE_RATE  = 16000
 CHANNELS     = 1
 SAMPLE_WIDTH = 2
@@ -27,12 +27,18 @@ MAX_CHUNK_MS = 25_000
 # LOAD ENV VARIABLES
 # =========================
 
-load_dotenv()
+l# =========================
+# LOAD ENV VARIABLES
+# =========================
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+
+# Streamlit secrets se key uthaye ga, agar wahan na mili to environment se
+GROQ_API_KEY = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
 
 if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found in .env")
+    st.error("GROQ_API_KEY missing! Please add it to Streamlit Secrets.")
+    st.stop()
 
 print("GROQ API Key loaded successfully")
 
